@@ -3,7 +3,7 @@
 mod util;
 
 fn one_a() {
-    let data = util::read_input_vec_i32("1_a_test");
+    let data: Vec<i32> = util::read_input_vector("1_a");
     let mut last = data[0];
     let mut count = 0;
     for d in &data[1..] {
@@ -16,7 +16,7 @@ fn one_a() {
 }
 
 fn one_b() {
-    let data = util::read_input_vec_i32("1_a");
+    let data: Vec<i32> = util::read_input_vector("1_a");
     if data.len() < 3 {
         print!("0");
         return
@@ -43,7 +43,7 @@ fn one_b() {
 }
 
 fn two_a() {
-    let changes = util::read_input_vector_changes("2_a");
+    let changes = util::read_input_vector("2_a");
     let mut forward = 0;
     let mut depth = 0;
     for c in changes {
@@ -58,7 +58,7 @@ fn two_a() {
 }
 
 fn two_b() {
-    let changes = util::read_input_vector_changes("2_a");
+    let changes = util::read_input_vector("2_a");
     let mut forward = 0;
     let mut depth = 0;
     let mut aim = 0;

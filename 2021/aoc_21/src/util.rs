@@ -9,8 +9,16 @@ pub enum SubVectorChange {
     Up(i32),
 }
 
-impl SubVectorChange {
-    fn parse(s: &str) -> Self {
+pub trait Parseable {
+    type Output;
+
+    fn parse(input: &str) -> Self::Output;
+}
+
+impl Parseable for SubVectorChange {
+    type Output = SubVectorChange;
+
+    fn parse(s: &str) -> Self::Output {
         let vals: Vec<&str> = s.split(' ').collect();
         let ival: i32 = vals[1].parse::<i32>().unwrap();
         match vals[0] {
@@ -22,6 +30,14 @@ impl SubVectorChange {
     }
 }
 
+impl Parseable for i32 {
+    type Output = i32;
+
+    fn parse(s: &str) -> Self::Output {
+        s.parse::<i32>().unwrap()
+    }
+}
+
 pub fn read_input(name: &str) -> String {
     let contents = fs::read_to_string(format!("{}{}.input", INPUT_DIR, name))
         .expect("Something went wrong reading the file");
@@ -29,12 +45,11 @@ pub fn read_input(name: &str) -> String {
     contents
 }
 
-pub fn read_input_vec_i32(name: &str) -> Vec<i32> {
+pub fn read_input_vector<T: Parseable<Output = T>>(name: &str) -> Vec<T> {
     let contents = read_input(name);
-    return contents.split('\n').map(|x| x.parse::<i32>().unwrap()).collect();
-}
-
-pub fn read_input_vector_changes(name: &str) -> Vec<SubVectorChange> {
-    let contents = read_input(name);
-    return contents.split('\n').map(|x| SubVectorChange::parse(x)).collect();
+    let mut result = Vec::new();
+    for x in contents.split('\n') {
+        result.push(T::parse(x));
+    }
+    result
 }
