@@ -60,17 +60,10 @@ impl Parseable for DiagnosticReport {
 }
 
 pub fn read_input(name: &str) -> String {
-    let contents = fs::read_to_string(format!("{}{}.input", INPUT_DIR, name))
-        .expect("Something went wrong reading the file");
-
-    contents
+    fs::read_to_string(format!("{}{}.input", INPUT_DIR, name))
+        .expect("Something went wrong reading the file")
 }
 
 pub fn read_input_vector<T: Parseable<Output = T>>(name: &str) -> Vec<T> {
-    let contents = read_input(name);
-    let mut result = Vec::new();
-    for x in contents.split('\n') {
-        result.push(T::parse(x));
-    }
-    result
+    read_input(name).split('\n').into_iter().map(|x| T::parse(x)).collect()
 }
