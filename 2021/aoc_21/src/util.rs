@@ -38,6 +38,27 @@ impl Parseable for i32 {
     }
 }
 
+
+#[derive(Debug, Clone)]
+pub struct DiagnosticReport{
+    pub chars: Vec<char>,
+    pub original: String,
+}
+
+impl Parseable for DiagnosticReport {
+    type Output = DiagnosticReport;
+
+    fn parse(s: &str) -> Self::Output {
+        let o = s.to_string();
+        let v = s.chars().collect();
+
+        DiagnosticReport{
+            chars: v,
+            original: o,
+        }
+    }
+}
+
 pub fn read_input(name: &str) -> String {
     let contents = fs::read_to_string(format!("{}{}.input", INPUT_DIR, name))
         .expect("Something went wrong reading the file");
