@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 mod util;
+mod day4;
 
 fn one_a() {
     let data: Vec<i32> = util::read_input_vector("1_a");
@@ -156,5 +157,6 @@ fn main() {
     // two_a();
     // two_b();
     // three_a();
-    three_b();
+    // three_b();
+    day4::run();
 }
