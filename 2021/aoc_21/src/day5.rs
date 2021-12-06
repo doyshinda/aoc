@@ -1,6 +1,13 @@
 use crate::util;
 use crate::util::Parseable;
 use either::Either;
+use nom::{
+    bytes::complete::tag,
+    character::complete::digit1,
+    combinator::recognize,
+    sequence::separated_pair,
+    IResult,
+};
 
 struct Vector {
     x1: i32,
@@ -10,28 +17,32 @@ struct Vector {
 }
 
 impl Vector {
-    fn is_straight_line(&self) -> bool {
-        return self.x1 == self.x2 || self.y1 == self.y2;
+    fn is_diag(&self) -> bool {
+        (self.x1 - self.x2).abs() == (self.y1 - self.y2).abs()
     }
+}
+
+fn x(input: &str) -> IResult<&str, i32> {
+    recognize(digit1)(input).map(|(i, res)| (i, res.parse::<i32>().unwrap()))
+}
+
+fn coord(input: &str) -> IResult<&str, (i32, i32)> {
+    separated_pair(x, tag(","), x)(input)
+}
+
+fn vector(input: &str) -> IResult<&str, ((i32, i32), (i32, i32))> {
+    separated_pair(coord, tag(" -> "), coord)(input)
 }
 
 impl Parseable for Vector {
     type Output = Vector;
     fn parse(s: &str) -> Self::Output {
-        let parts: Vec<&str> = s.split(" -> ").collect();
-        let starts: Vec<i32> = parts[0]
-            .split(',')
-            .map(|x| x.parse::<i32>().unwrap())
-            .collect();
-        let ends: Vec<i32> = parts[1]
-            .split(',')
-            .map(|x| x.parse::<i32>().unwrap())
-            .collect();
-        Vector {
-            x1: starts[0],
-            x2: ends[0],
-            y1: starts[1],
-            y2: ends[1],
+        let (_, r) = vector(s).unwrap();
+        Vector{
+            x1: r.0.0,
+            x2: r.1.0,
+            y1: r.0.1,
+            y2: r.1.1,
         }
     }
 }
@@ -54,6 +65,7 @@ fn part_1() -> i32 {
             for n in start..end {
                 answer[n as usize][v.x1 as usize] += 1;
             }
+            continue
         }
         if v.y1 == v.y2 {
             let (start, end) = if v.x1 >= v.x2 {
@@ -82,7 +94,7 @@ fn part_2() -> i32 {
         answer.push(v)
     }
     for v in vectors {
-        if (v.x1 - v.x2).abs() == (v.y1 - v.y2).abs() {
+        if v.is_diag() {
             let num = (v.y1 - v.y2).abs() + 1;
             let mut yiter = if v.y1 >= v.y2 {
                 Either::Left((v.y2..=v.y1).rev())
@@ -130,10 +142,13 @@ fn part_2() -> i32 {
 }
 
 pub fn run() {
+    let start = std::time::Instant::now();
     let answer = part_1();
-    println!("part_1 {:?}", answer);
+    println!("part_1 {:?}, took {}us", answer, start.elapsed().as_micros());
+
+    let start = std::time::Instant::now();
     let answer = part_2();
-    println!("part_2 {:?}", answer);
+    println!("part_2 {:?}, took {}us", answer, start.elapsed().as_micros());
 }
 
 #[test]
