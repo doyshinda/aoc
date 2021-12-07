@@ -22,15 +22,15 @@ impl LanternFish {
 }
 
 fn part_1() -> i32 {
-    let mut fishes: Vec<LanternFish> = util::read_input("6_a_test")
+    let mut fishes: Vec<LanternFish> = util::read_input("6_a")
         .split(',')
         .map(|x| LanternFish {
             timer: x.parse::<u32>().unwrap(),
         })
         .collect();
 
+    let mut new_fishes = Vec::new();
     for _ in 0..80 {
-        let mut new_fishes = Vec::new();
         for f in fishes.iter_mut() {
             match f.cycle() {
                 Some(new_fish) => new_fishes.push(new_fish),
@@ -38,7 +38,7 @@ fn part_1() -> i32 {
             }
         }
 
-        for nf in new_fishes {
+        for nf in new_fishes.drain(..) {
             fishes.push(nf)
         }
     }
@@ -46,23 +46,22 @@ fn part_1() -> i32 {
     fishes.len() as i32
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 struct Slot {
     count: usize,
     skip: usize,
 }
 
 fn part_2() -> usize {
-    let mut map = Vec::new();
-    for _ in 0..7 {
-        map.push(Slot { count: 0, skip: 0 });
-    }
-
-    for age in util::read_input("6_a").split(',') {
-        let val = age.parse::<usize>().unwrap();
-        let slot = val % 7;
-        map[slot].count += 1;
-    }
+    let mut map =
+        util::read_input("6_a")
+            .split(',')
+            .fold([Slot { count: 0, skip: 0 }; 7], |mut map, age| {
+                let val = age.parse::<usize>().unwrap();
+                let slot = val % 7;
+                map[slot].count += 1;
+                map
+            });
 
     for i in 0..256 {
         let f = &mut map[(i % 7) as usize];
