@@ -87,6 +87,8 @@ fn basin_size(y: i32, x: i32, grid: &Vec<Vec<u32>>, ymax: i32, xmax: i32) -> u32
     let mut seen = HashSet::new();
     seen.insert((y, x));
 
+    let neighbors = vec![(-1, 0), (1, 0), (0, -1), (0, 1)];
+
     while remaining.len() > 0 {
         let (y, x) = remaining.pop().unwrap();
         if grid[y as usize][x as usize] <= 8 {
@@ -95,55 +97,24 @@ fn basin_size(y: i32, x: i32, grid: &Vec<Vec<u32>>, ymax: i32, xmax: i32) -> u32
             continue;
         }
 
-        let mut down = y - 1;
-        while down >= 0 {
-            if grid[down as usize][x as usize] <= 8 {
-                if !seen.contains(&(down, x)) {
-                    remaining.push((down, x));
-                    seen.insert((down, x));
-                }
-                down -= 1;
-            } else {
-                break;
-            }
-        }
+        for (yd, xd) in &neighbors {
+            let mut ydir = y + yd;
+            let mut xdir = x + xd;
 
-        let mut up = y + 1;
-        while up < ymax {
-            if grid[up as usize][x as usize] <= 8 {
-                if !seen.contains(&(up, x)) {
-                    remaining.push((up, x));
-                    seen.insert((up, x));
+            while ydir >= 0 && ydir < ymax && xdir >= 0 && xdir < xmax {
+                let coord = (ydir, xdir);
+                if seen.contains(&coord) {
+                    break;
                 }
-                up += 1;
-            } else {
-                break;
-            }
-        }
 
-        let mut left = x - 1;
-        while left >= 0 {
-            if grid[y as usize][left as usize] <= 8 {
-                if !seen.contains(&(y, left)) {
-                    remaining.push((y, left));
-                    seen.insert((y, left));
+                if grid[ydir as usize][xdir as usize] <= 8 {
+                    remaining.push(coord);
+                    seen.insert(coord);
+                    ydir += yd;
+                    xdir += xd;
+                } else {
+                    break;
                 }
-                left -= 1;
-            } else {
-                break;
-            }
-        }
-
-        let mut right = x + 1;
-        while right < xmax {
-            if grid[y as usize][right as usize] <= 8 {
-                if !seen.contains(&(y, right)) {
-                    remaining.push((y, right));
-                    seen.insert((y, right));
-                }
-                right += 1
-            } else {
-                break;
             }
         }
     }
