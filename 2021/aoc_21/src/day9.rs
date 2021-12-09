@@ -92,7 +92,7 @@ fn basin_size(y: i32, x: i32, grid: &Vec<Vec<u32>>, ymax: i32, xmax: i32) -> u32
         if grid[y as usize][x as usize] <= 8 {
             size += 1;
         } else {
-            continue
+            continue;
         }
 
         let mut down = y - 1;
@@ -104,7 +104,7 @@ fn basin_size(y: i32, x: i32, grid: &Vec<Vec<u32>>, ymax: i32, xmax: i32) -> u32
                 }
                 down -= 1;
             } else {
-                break
+                break;
             }
         }
 
@@ -117,7 +117,7 @@ fn basin_size(y: i32, x: i32, grid: &Vec<Vec<u32>>, ymax: i32, xmax: i32) -> u32
                 }
                 up += 1;
             } else {
-                break
+                break;
             }
         }
 
@@ -130,7 +130,7 @@ fn basin_size(y: i32, x: i32, grid: &Vec<Vec<u32>>, ymax: i32, xmax: i32) -> u32
                 }
                 left -= 1;
             } else {
-                break
+                break;
             }
         }
 
@@ -143,7 +143,7 @@ fn basin_size(y: i32, x: i32, grid: &Vec<Vec<u32>>, ymax: i32, xmax: i32) -> u32
                 }
                 right += 1
             } else {
-                break
+                break;
             }
         }
     }
