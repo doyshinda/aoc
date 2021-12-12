@@ -57,7 +57,7 @@ fn find_unique_paths(
         return 0;
     }
 
-    if *start == start.clone().to_ascii_lowercase() {
+    if start.chars().all(|c| c.is_ascii_lowercase()) {
         seen.insert(start.clone());
     }
 
@@ -71,7 +71,7 @@ fn find_unique_paths(
 
 fn part_1(map: &HashMap<String, Vec<String>>) -> u32 {
     let mut unique_paths = 0;
-    for p in map.get(&"start".to_string()).unwrap() {
+    for p in map.get(START).unwrap() {
         let seen = HashSet::new();
         unique_paths += find_unique_paths(p, &map, seen);
     }
@@ -81,7 +81,7 @@ fn part_1(map: &HashMap<String, Vec<String>>) -> u32 {
 
 fn part_2(map: &HashMap<String, Vec<String>>) -> u32 {
     let mut unique_paths = 0;
-    for p in map.get(&"start".to_string()).unwrap() {
+    for p in map.get(START).unwrap() {
         let seen = CC {
             counts: HashMap::new(),
             valid: 2,
@@ -104,19 +104,15 @@ pub fn run() {
 }
 
 fn parse_input(name: &str) -> HashMap<String, Vec<String>> {
-    let mut map = HashMap::new();
+    let mut map: HashMap<String, Vec<String>> = HashMap::new();
     util::read_input(name).split('\n').for_each(|line| {
-        let mut parts = line.split('-');
-        let a = parts.next().unwrap().to_string();
-        let b = parts.next().unwrap().to_string();
+        let (a, b) = line.split_once('-').unwrap();
         if b != START && a != END {
-            let entry = map.entry(a.clone()).or_insert(Vec::new());
-            entry.push(b.clone());
+            map.entry(a.to_string()).or_default().push(b.to_string());
         }
 
         if a != START && b != END {
-            let entry = map.entry(b).or_insert(Vec::new());
-            entry.push(a);
+            map.entry(b.to_string()).or_default().push(a.to_string());
         }
     });
 
