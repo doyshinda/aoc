@@ -4,63 +4,9 @@ use std::collections::{HashMap, HashSet};
 const START: &'static str = "start";
 const END: &'static str = "end";
 
-fn find_unique_paths(
-    start: &String,
-    map: &HashMap<String, Vec<String>>,
-    mut seen: HashSet<String>,
-) -> u32 {
-    if start == END {
-        return 1;
-    }
-
-    if seen.contains(start) {
-        return 0;
-    }
-
-    if *start == start.clone().to_ascii_lowercase() {
-        seen.insert(start.clone());
-    }
-
-    let paths = map.get(start);
-    if paths.is_none() {
-        return 0;
-    }
-    let paths = paths.unwrap();
-    if paths.len() == 0 {
-        return 0;
-    }
-
-    let mut unique_paths = 0;
-    for p in paths {
-        unique_paths += find_unique_paths(p, &map, seen.clone());
-    }
-
-    return unique_paths;
-}
-
-fn part_1() -> u32 {
-    let map = parse_input("12_a");
-    let mut unique_paths = 0;
-    for p in map.get(&"start".to_string()).unwrap() {
-        let seen = HashSet::new();
-        unique_paths += find_unique_paths(p, &map, seen);
-    }
-
-    unique_paths
-}
-
-fn part_2() -> u32 {
-    let map = parse_input("12_a");
-    let mut unique_paths = 0;
-    for p in map.get(&"start".to_string()).unwrap() {
-        let seen = CC {
-            counts: HashMap::new(),
-            valid: 2,
-        };
-        unique_paths += find_unique_paths2(p, &map, seen);
-    }
-
-    unique_paths
+trait Set: Clone {
+    fn valid(&mut self, c: &String) -> bool;
+    fn insert(&mut self, c: String);
 }
 
 #[derive(Debug, Clone)]
@@ -69,7 +15,15 @@ struct CC {
     valid: u32,
 }
 
-impl CC {
+impl Set for CC {
+    fn insert(&mut self, c: String) {
+        let entry = self.counts.entry(c).or_insert(0);
+        *entry += 1;
+        if *entry > 1 {
+            self.valid = 1;
+        }
+    }
+
     fn valid(&mut self, c: &String) -> bool {
         let entry = self.counts.get(c);
         if entry.is_none() {
@@ -78,17 +32,23 @@ impl CC {
 
         *entry.unwrap() < self.valid
     }
+}
 
+impl Set for HashSet<String> {
     fn insert(&mut self, c: String) {
-        let entry = self.counts.entry(c).or_insert(0);
-        *entry += 1;
-        if *entry > 1 {
-            self.valid = 1;
-        }
+        self.insert(c);
+    }
+
+    fn valid(&mut self, c: &String) -> bool {
+        !self.contains(c)
     }
 }
 
-fn find_unique_paths2(start: &String, map: &HashMap<String, Vec<String>>, mut seen: CC) -> u32 {
+fn find_unique_paths(
+    start: &String,
+    map: &HashMap<String, Vec<String>>,
+    mut seen: impl Set,
+) -> u32 {
     if start == END {
         return 1;
     }
@@ -101,30 +61,45 @@ fn find_unique_paths2(start: &String, map: &HashMap<String, Vec<String>>, mut se
         seen.insert(start.clone());
     }
 
-    let paths = map.get(start);
-    if paths.is_none() {
-        return 0;
+    match map.get(start) {
+        None => return 0,
+        Some(paths) => paths
+            .iter()
+            .fold(0, |acc, p| acc + find_unique_paths(p, &map, seen.clone())),
     }
-    let paths = paths.unwrap();
-    if paths.len() == 0 {
-        return 0;
-    }
+}
 
+fn part_1(map: &HashMap<String, Vec<String>>) -> u32 {
     let mut unique_paths = 0;
-    for p in paths {
-        unique_paths += find_unique_paths2(p, &map, seen.clone());
+    for p in map.get(&"start".to_string()).unwrap() {
+        let seen = HashSet::new();
+        unique_paths += find_unique_paths(p, &map, seen);
     }
 
-    return unique_paths;
+    unique_paths
+}
+
+fn part_2(map: &HashMap<String, Vec<String>>) -> u32 {
+    let mut unique_paths = 0;
+    for p in map.get(&"start".to_string()).unwrap() {
+        let seen = CC {
+            counts: HashMap::new(),
+            valid: 2,
+        };
+        unique_paths += find_unique_paths(p, &map, seen);
+    }
+
+    unique_paths
 }
 
 pub fn run() {
+    let map = parse_input("12_a");
     let start = std::time::Instant::now();
-    let answer = part_1();
+    let answer = part_1(&map);
     println!("part_1 {:?} , took {:?}", answer, start.elapsed());
 
     let start = std::time::Instant::now();
-    let answer = part_2();
+    let answer = part_2(&map);
     println!("part_2 {:?} , took {:?}", answer, start.elapsed());
 }
 
