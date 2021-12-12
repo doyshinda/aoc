@@ -57,7 +57,7 @@ fn find_unique_paths(
         return 0;
     }
 
-    if start.chars().all(|c| c.is_ascii_lowercase()) {
+    if start.as_bytes()[0] > b'Z' {
         seen.insert(start.clone());
     }
 
