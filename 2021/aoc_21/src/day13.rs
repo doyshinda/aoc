@@ -1,7 +1,8 @@
 use crate::util;
+use griddy::Grid;
 
-fn display(grid: &Vec<Vec<u32>>) {
-    for row in grid {
+fn display(grid: &Grid<usize>) {
+    for row in grid.rows() {
         let mut s = String::new();
         for r in row {
             if *r >= 1 {
@@ -81,8 +82,11 @@ fn part_1() -> usize {
 }
 
 fn part_2() -> usize {
-    let mut vals: Vec<(u32, u32)> = Vec::new();
-    let mut folds: Vec<(char, u32)> = Vec::new();
+    let mut vals: Vec<(usize, usize)> = Vec::new();
+    let mut folds: Vec<(char, usize)> = Vec::new();
+
+    let mut xmax = 0;
+    let mut ymax = 0;
     for line in util::read_input("13_a").lines() {
         if line.len() == 0 {
             continue;
@@ -90,49 +94,33 @@ fn part_2() -> usize {
         if line.starts_with("fold") {
             let parts: Vec<&str> = line.split_whitespace().collect();
             let (c, v) = parts[2].split_once('=').unwrap();
-            folds.push((c.chars().next().unwrap(), v.parse::<u32>().unwrap()));
+            folds.push((c.chars().next().unwrap(), v.parse::<usize>().unwrap()));
         } else {
             let (a, b) = line.split_once(',').unwrap();
-            vals.push((a.parse::<u32>().unwrap(), b.parse::<u32>().unwrap()));
+            let (a, b) = (a.parse::<usize>().unwrap(), b.parse::<usize>().unwrap());
+            if a > xmax {
+                xmax = a;
+            }
+
+            if b > ymax {
+                ymax = b;
+            }
+            vals.push((a, b));
         }
     }
 
-    let mut xmax = 0;
-    let mut ymax = 0;
-    vals.iter().for_each(|(a, b)| {
-        if *a > xmax {
-            xmax = *a;
-        }
-
-        if *b > ymax {
-            ymax = *b;
-        }
-    });
     xmax += 1;
     ymax += 1;
 
-    let mut grid = Vec::with_capacity(ymax as usize);
-    for _ in 0..ymax {
-        let mut row = Vec::with_capacity(xmax as usize);
-        (0..xmax).for_each(|_| row.push(0));
-        grid.push(row);
-    }
+    let mut grid = Grid::init(ymax, xmax, 0);
 
     for (x, y) in vals {
-        grid[y as usize][x as usize] = 1;
+        grid[y][x] = 1;
     }
 
     for (c, v) in folds {
         if c == 'y' {
-            let mut new_y = (0..v as usize).rev();
-            for y in (v + 1) as usize..ymax as usize {
-                let new_y_coord = new_y.next().unwrap();
-                for x in 0..xmax as usize {
-                    grid[new_y_coord as usize][x as usize] += grid[y as usize][x as usize];
-                }
-            }
-            grid.truncate(v as usize);
-            ymax = v;
+            ymax = grid.fold_at_row(v, |new, old| new + old);
         } else {
             for y in 0..ymax {
                 let mut new_x = (0..v as usize).rev();
