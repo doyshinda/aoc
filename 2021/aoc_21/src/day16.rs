@@ -9,7 +9,7 @@ const GREATER: u64 = 5;
 const LESS: u64 = 6;
 const EQUAL: u64 = 7;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 struct Packet {
     version: u64,
     type_id: u64,
@@ -217,63 +217,26 @@ fn test_parse_operator_type_one() {
 }
 
 #[test]
-fn test_versions_sum_1() {
-    let p = Packet::from_str("8A004A801A8002F478");
-    let mut s = 0;
-    let mut queue = vec![p];
-    while queue.len() > 0 {
-        let sp = queue.pop().unwrap();
-        s += sp.version;
-        for child in sp.subs {
-            queue.push(child);
+fn test_versions_sum() {
+    let test_cases = vec![
+        ("8A004A801A8002F478", 16),
+        ("620080001611562C8802118E34", 12),
+        ("C0015000016115A2E0802F182340", 23),
+        ("A0016C880162017C3686B18A3D4780", 31),
+    ];
+    for (input, expected) in test_cases {
+        let p = Packet::from_str(input);
+        let mut s = 0;
+        let mut queue = vec![p];
+        while queue.len() > 0 {
+            let sp = queue.pop().unwrap();
+            s += sp.version;
+            for child in sp.subs {
+                queue.push(child);
+            }
         }
+        assert_eq!(s, expected);
     }
-    assert_eq!(s, 16);
-}
-
-#[test]
-fn test_versions_sum_2() {
-    let p = Packet::from_str("620080001611562C8802118E34");
-    let mut s = 0;
-    let mut queue = vec![p];
-    while queue.len() > 0 {
-        let sp = queue.pop().unwrap();
-        s += sp.version;
-        for child in sp.subs {
-            queue.push(child);
-        }
-    }
-    assert_eq!(s, 12);
-}
-
-#[test]
-fn test_versions_sum_3() {
-    let p = Packet::from_str("C0015000016115A2E0802F182340");
-    let mut s = 0;
-    let mut queue = vec![p];
-    while queue.len() > 0 {
-        let sp = queue.pop().unwrap();
-        s += sp.version;
-        for child in sp.subs {
-            queue.push(child);
-        }
-    }
-    assert_eq!(s, 23);
-}
-
-#[test]
-fn test_versions_sum_4() {
-    let p = Packet::from_str("A0016C880162017C3686B18A3D4780");
-    let mut s = 0;
-    let mut queue = vec![p];
-    while queue.len() > 0 {
-        let sp = queue.pop().unwrap();
-        s += sp.version;
-        for child in sp.subs {
-            queue.push(child);
-        }
-    }
-    assert_eq!(s, 31);
 }
 
 #[test]
