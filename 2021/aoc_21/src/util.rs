@@ -1,3 +1,4 @@
+#![macro_use]
 use std::fs;
 
 const INPUT_DIR: &str = "/home/abe/misc/adventofcode/2021/aoc_21/input/";
@@ -66,4 +67,18 @@ pub fn read_input(name: &str) -> String {
 
 pub fn read_input_vector<T: Parseable<Output = T>>(name: &str) -> Vec<T> {
     read_input(name).split('\n').into_iter().map(|x| T::parse(x)).collect()
+}
+
+macro_rules! run {
+    () => {
+        pub fn run() {
+            let start = std::time::Instant::now();
+            let answer = part_1();
+            println!("part_1 {:?} , took {:?}", answer, start.elapsed());
+
+            let start = std::time::Instant::now();
+            let answer = part_2();
+            println!("part_2 {:?} , took {:?}", answer, start.elapsed());
+        }
+    };
 }
