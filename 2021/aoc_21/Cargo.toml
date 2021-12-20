@@ -10,3 +10,4 @@ either = "*"
 nom = "*"
 griddy = {path = "/home/abe/projects/griddy"}
 lazy_static = "*"
+indexmap = "*"
