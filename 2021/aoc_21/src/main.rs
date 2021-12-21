@@ -20,7 +20,7 @@ mod day16;
 mod day17;
 mod day18;
 mod day20;
-mod aoc_2015;
+mod day21;
 
 fn main() {
     // day1::run();
@@ -41,5 +41,6 @@ fn main() {
     // day16::run();
     // day17::run();
     // day18::run();
-    day20::run();
+    // day20::run();
+    day21::run();
 }
