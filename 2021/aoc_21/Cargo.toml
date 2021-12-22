@@ -9,3 +9,4 @@ edition = "2021"
 either = "*"
 nom = "*"
 griddy = {path = "/home/abe/projects/griddy"}
+lazy_static = "*"
