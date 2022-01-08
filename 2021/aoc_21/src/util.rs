@@ -82,3 +82,12 @@ macro_rules! run {
         }
     };
 }
+
+macro_rules! log {
+    ($($arg:tt)*) => {
+        match env::var("DEBUG") {
+            Ok(_) => println!($($arg)*),
+            _ => (),
+        }
+    };
+}
