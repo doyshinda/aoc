@@ -1,9 +1,5 @@
 use crate::util;
-use std::{
-    env,
-    fmt,
-    ops::Add,
-};
+use std::{env, fmt, ops::Add};
 
 const OPEN: i32 = -2;
 const CLOSE: i32 = -1;
@@ -11,20 +7,20 @@ const SEPARATOR: i32 = -3;
 
 #[derive(Debug, Eq, Clone, PartialEq)]
 struct Number {
-    c: Vec<i32>
+    c: Vec<i32>,
 }
 
 impl Number {
     fn new(s: &str) -> Self {
         Number {
-            c: s.chars().map(|c| {
-                match c {
+            c: s.chars()
+                .map(|c| match c {
                     '[' => OPEN,
                     ']' => CLOSE,
                     ',' => SEPARATOR,
                     v => v.to_digit(10).expect("invalid input number") as i32,
-                }
-            }).collect()
+                })
+                .collect(),
         }
     }
 
@@ -37,7 +33,6 @@ impl Number {
                 break;
             }
         }
-
     }
 
     fn explode(&mut self) -> bool {
@@ -45,8 +40,14 @@ impl Number {
         for i in 0..self.c.len() {
             let m = self.c[i];
             match m {
-                OPEN => { depth += 1; continue },
-                CLOSE => { depth -= 1; continue },
+                OPEN => {
+                    depth += 1;
+                    continue;
+                }
+                CLOSE => {
+                    depth -= 1;
+                    continue;
+                }
                 _ => (),
             }
             if depth == 5 {
@@ -62,7 +63,7 @@ impl Number {
                 for _ in 0..4 {
                     self.c.remove(i - 1);
                 }
-                self.c[i- 1] = 0;
+                self.c[i - 1] = 0;
                 log!("done  : {}", self);
                 return true;
             }
@@ -112,7 +113,6 @@ impl Number {
             let mut m = Vec::new();
             let mut skip = 0;
             for s in l.windows(5) {
-                log!("s -> {}", to_str(&s));
                 if skip > 0 {
                     skip -= 1;
                     continue;
@@ -121,7 +121,7 @@ impl Number {
                     [OPEN, l, SEPARATOR, r, CLOSE] => {
                         m.push((3 * l) + (2 * r));
                         skip = 4;
-                    },
+                    }
                     [a, _, _, _, _] => m.push(*a),
                     _ => (),
                 }
@@ -150,7 +150,7 @@ impl Add for Number {
         new.push(SEPARATOR);
         new.extend(other.c);
         new.push(CLOSE);
-        Number {c: new}
+        Number { c: new }
     }
 }
 
@@ -162,7 +162,9 @@ impl fmt::Display for Number {
 }
 
 macro_rules! num {
-    ( $arg:tt ) => { Number::new($arg) };
+    ( $arg:tt ) => {
+        Number::new($arg)
+    };
 }
 
 fn to_str(c: &[i32]) -> String {
@@ -273,7 +275,12 @@ fn test_explode_norm() {
 
     let mut a = num!("[[[[0,7],4],[7,[[8,4],9]]],[1,1]]");
     assert!(a.explode());
-    let b = Number {c: vec![-2, -2, -2, -2, 0, -3, 7, -1, -3, 4, -1, -3, -2, 15, -3, -2, 0, -3, 13, -1, -1, -1, -3, -2, 1, -3, 1, -1, -1]};
+    let b = Number {
+        c: vec![
+            -2, -2, -2, -2, 0, -3, 7, -1, -3, 4, -1, -3, -2, 15, -3, -2, 0, -3, 13, -1, -1, -1, -3,
+            -2, 1, -3, 1, -1, -1,
+        ],
+    };
     assert_eq!(a, b, "\ne: {}, \ng: {}\n", b, a);
 }
 
@@ -327,7 +334,8 @@ fn test_magnitude() {
 
 #[test]
 fn test_reduce_long() {
-    let mut a = num!("[[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]],[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]]");
+    let mut a =
+        num!("[[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]],[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]]");
     a.reduce();
     let b = num!("[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]");
     assert_eq!(a, b, "\ne: {}, \ng: {}\n", b, a);
