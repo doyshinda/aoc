@@ -39,11 +39,19 @@ macro_rules! run {
         pub fn run() {
             let start = std::time::Instant::now();
             let answer = part_1();
-            println!("part_1 {:?} , took {:?}", answer, start.elapsed());
+            print!(
+                "====================\npart 1 [{:?}]\n====================\n",
+                start.elapsed(),
+            );
+            println!("{:?}\n\n", answer);
 
             let start = std::time::Instant::now();
             let answer = part_2();
-            println!("part_2 {:?} , took {:?}", answer, start.elapsed());
+            print!(
+                "====================\npart 2 [{:?}]\n====================\n",
+                start.elapsed(),
+            );
+            println!("{:?}\n\n", answer);
         }
     };
 }
