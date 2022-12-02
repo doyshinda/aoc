@@ -37,8 +37,7 @@ fn part_2() -> u64 {
     }
 
     sums.sort();
-    let l = sums.len();
-    return sums[l-1] + sums[l-2] + sums[l-3];
+    return sums.iter().rev().take(3).sum();
 }
 
 run!();

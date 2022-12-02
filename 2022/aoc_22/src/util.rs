@@ -1,4 +1,5 @@
 #![macro_use]
+#![allow(unused_macros)]
 use std::fs;
 
 const INPUT_DIR: &str = "/home/abe/misc/adventofcode/2022/aoc_22/input/";
