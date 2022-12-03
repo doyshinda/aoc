@@ -64,3 +64,21 @@ macro_rules! log {
         }
     };
 }
+
+macro_rules! unum {
+    ($arg:tt) => {
+        $arg.parse::<u64>().unwrap()
+    };
+}
+
+macro_rules! usnum {
+    ($arg:tt) => {
+        $arg.parse::<usize>().unwrap()
+    };
+}
+
+macro_rules! inum {
+    ($arg:tt) => {
+        $arg.parse::<i64>().unwrap()
+    };
+}
