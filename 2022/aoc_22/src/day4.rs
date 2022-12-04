@@ -1,8 +1,7 @@
 use crate::util;
-use std::collections::HashSet;
 
 fn part_1() -> u64 {
-    let data = util::read_input("4_test.input");
+    let data = util::read_input("4.input");
     let mut sum = 0;
     for line in data.lines() {
         let (a, b) = line.split_once(',').unwrap();
@@ -40,10 +39,8 @@ fn part_2() -> u64 {
         let b_min = unum!(e);
         let b_max = unum!(f);
 
-        let a_seen: HashSet<u64> = HashSet::from_iter(a_min..a_max+1);
-
         for i in b_min..b_max+1 {
-            if a_seen.contains(&i) {
+            if i >= a_min && i <= a_max{
                 sum += 1;
                 break;
             }
