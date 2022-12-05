@@ -82,3 +82,33 @@ macro_rules! inum {
         $arg.parse::<i64>().unwrap()
     };
 }
+
+macro_rules! hs {
+    () => {
+        std::collections::HashSet::new()
+    };
+    ($name:ident, $t:ty) => {
+        let mut $name: std::collections::HashSet<$t> = std::collections::HashSet::new();
+    };
+    ($arg:expr) => {
+        std::collections::HashSet::from_iter($arg.iter().cloned())
+    };
+    ($name:ident, $t:ty, $arg:expr) => {
+        let $name: std::collections::HashSet<$t> = std::collections::HashSet::from_iter($arg.iter().cloned());
+    };
+}
+
+macro_rules! hm {
+    () => {
+        std::collections::HashMap::new()
+    };
+    ($name:ident, $t:ty, $t2:ty) => {
+        let mut $name: std::collections::HashMap<$t, $t2> = std::collections::HashMap::new();
+    };
+    ($arg:expr) => {
+        std::collections::HashMap::from_iter($arg.iter().cloned())
+    };
+    ($name:ident, $t:ty, $t2:ty, $arg:expr) => {
+        let $name: std::collections::HashMap<$t, $t2> = std::collections::HashMap::from_iter($arg.iter().cloned());
+    };
+}

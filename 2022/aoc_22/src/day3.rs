@@ -8,8 +8,8 @@ fn part_1() -> u64 {
     for line in data.lines() {
         let vals = line.chars().collect::<Vec<char>>();
         let mid = vals.len() / 2;
-        let lower: HashSet<char> = HashSet::from_iter(vals[..mid].iter().cloned());
-        let upper: HashSet<char> = HashSet::from_iter(vals[mid..].iter().cloned());
+        hs!(lower, char, vals[..mid]);
+        hs!(upper, char, vals[mid..]);
 
         for x in lower.intersection(&upper) {
             let p = indexing.find(*x).unwrap() + 1;
