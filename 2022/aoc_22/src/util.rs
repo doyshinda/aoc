@@ -69,10 +69,17 @@ macro_rules! unum {
     ($arg:tt) => {
         $arg.parse::<u64>().unwrap()
     };
+
+    ($arg:expr) => {
+        $arg.parse::<u64>().unwrap()
+    };
 }
 
 macro_rules! usnum {
     ($arg:tt) => {
+        $arg.parse::<usize>().unwrap()
+    };
+    ($arg:expr) => {
         $arg.parse::<usize>().unwrap()
     };
 }
