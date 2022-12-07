@@ -37,8 +37,7 @@ fn part_1() -> u64 {
             for d in &directories {
                 parents.push(d.to_string());
                 let curr_dir = parents.join("/");
-                dir_sizes.entry(curr_dir).and_modify(|c| *c += u_size).or_insert(u_size);
-
+                hm_inc!(dir_sizes, curr_dir, u_size);
             }
         }
     }
@@ -86,8 +85,7 @@ fn part_2() -> u64 {
             for d in &directories {
                 parents.push(d.to_string());
                 let curr_dir = parents.join("/");
-                dir_sizes.entry(curr_dir).and_modify(|c| *c += u_size).or_insert(u_size);
-
+                hm_inc!(dir_sizes, curr_dir, u_size);
             }
         }
     }

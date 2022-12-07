@@ -119,3 +119,9 @@ macro_rules! hm {
         let $name: std::collections::HashMap<$t, $t2> = std::collections::HashMap::from_iter($arg.iter().cloned());
     };
 }
+
+macro_rules! hm_inc {
+    ($name:ident, $key:expr, $value:expr) => {
+        $name.entry($key).and_modify(|c| *c += $value).or_insert($value);
+    }
+}
