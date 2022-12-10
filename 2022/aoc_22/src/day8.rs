@@ -9,7 +9,7 @@ fn part_1() -> u64 {
     let mut visible = 0;
 
     for (row_idx, row) in grid.iter().enumerate() {
-        for (col_idx, _) in grid[row_idx].iter().enumerate() {
+        for col_idx in 0..row.len() {
             if am_visible_row(row, col_idx) {
                 visible += 1;
                 continue;
@@ -33,7 +33,7 @@ fn part_2() -> u64 {
 
     let mut score = 0;
     for (row_idx, row) in grid.iter().enumerate() {
-        for (col_idx, _) in row.iter().enumerate() {
+        for col_idx in 0..row.len() {
             let this_score = get_score(&grid, row_idx, col_idx);
             if this_score > score {
                 score = this_score;
