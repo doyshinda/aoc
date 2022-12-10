@@ -1,7 +1,7 @@
 use crate::util;
 
-const COMMAND: &'static str = "$";
-const DIR: &'static str = "dir";
+const COMMAND: &str = "$";
+const DIR: &str = "dir";
 
 fn part_1() -> u64 {
     let data = util::read_input("7.input");
@@ -17,20 +17,20 @@ fn part_1() -> u64 {
                     if cmd_args[2] == ".." {
                         directories.pop().unwrap();
                     } else {
-                        directories.push(cmd_args[2].clone());
+                        directories.push(cmd_args[2]);
                     }
                 }
                 "ls" => in_ls = true,
                 _ => unreachable!(),
             }
-            continue
+            continue;
         }
 
         if in_ls {
             if line.starts_with(DIR) {
                 continue;
             }
-            let (f_size, _) = line.split_once(" ").unwrap();
+            let (f_size, _) = line.split_once(' ').unwrap();
             let u_size = unum!(f_size);
 
             let mut parents = Vec::new();
@@ -43,7 +43,7 @@ fn part_1() -> u64 {
     }
 
     let mut total = 0;
-    for (_, s) in &dir_sizes{
+    for s in dir_sizes.values() {
         if *s <= 100000 {
             total += *s;
         }
@@ -65,20 +65,20 @@ fn part_2() -> u64 {
                     if cmd_args[2] == ".." {
                         directories.pop().unwrap();
                     } else {
-                        directories.push(cmd_args[2].clone());
+                        directories.push(cmd_args[2]);
                     }
                 }
                 "ls" => in_ls = true,
                 _ => unreachable!(),
             }
-            continue
+            continue;
         }
 
         if in_ls {
             if line.starts_with(DIR) {
                 continue;
             }
-            let (f_size, _) = line.split_once(" ").unwrap();
+            let (f_size, _) = line.split_once(' ').unwrap();
             let u_size = unum!(f_size);
 
             let mut parents = Vec::new();
@@ -95,7 +95,7 @@ fn part_2() -> u64 {
     let space_needed = 30000000 - unusused_space;
     let mut candidates = Vec::new();
 
-    for (_, s) in &dir_sizes{
+    for s in dir_sizes.values() {
         if *s >= space_needed {
             candidates.push(*s);
         }

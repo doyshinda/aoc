@@ -10,7 +10,7 @@ fn part_1() -> u64 {
         if line.starts_with("noop") {
             instructions.push((1, 0));
         } else {
-            let (_, v) = line.split_once(" ").unwrap();
+            let (_, v) = line.split_once(' ').unwrap();
             instructions.push((2, inum!(v)));
         }
     }
@@ -19,11 +19,16 @@ fn part_1() -> u64 {
     for i in instructions {
         for _ in 0..i.0 {
             cycle_count += 1;
-            if cycle_count == 20 || cycle_count == 60 || cycle_count == 100 || cycle_count == 140 || cycle_count == 180 || cycle_count == 220 {
+            if cycle_count == 20
+                || cycle_count == 60
+                || cycle_count == 100
+                || cycle_count == 140
+                || cycle_count == 180
+                || cycle_count == 220
+            {
                 let sig = cycle_count * reg;
                 sum += sig;
             }
-            
         }
         reg += i.1
     }
@@ -39,7 +44,7 @@ fn part_2() -> u64 {
         if line.starts_with("noop") {
             instructions.push((1, 0));
         } else {
-            let (_, v) = line.split_once(" ").unwrap();
+            let (_, v) = line.split_once(' ').unwrap();
             instructions.push((2, inum!(v)));
         }
     }
@@ -54,7 +59,7 @@ fn part_2() -> u64 {
             }
             cycle_count += 1;
             if cycle_count % 40 == 0 && cycle_count > 1 {
-                row += 1 as usize;
+                row += 1_usize;
                 col = 0;
             } else {
                 col += 1;

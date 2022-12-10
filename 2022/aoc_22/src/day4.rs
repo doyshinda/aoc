@@ -39,8 +39,8 @@ fn part_2() -> u64 {
         let b_min = unum!(e);
         let b_max = unum!(f);
 
-        for i in b_min..b_max+1 {
-            if i >= a_min && i <= a_max{
+        for i in b_min..=b_max {
+            if i >= a_min && i <= a_max {
                 sum += 1;
                 break;
             }

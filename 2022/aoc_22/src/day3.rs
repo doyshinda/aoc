@@ -31,7 +31,10 @@ fn part_2() -> u64 {
             let e3_hash: HashSet<char> = chunk[2].chars().collect();
 
             let intersection: HashSet<_> = &(&e1_hash & &e2_hash) & &e3_hash;
-            intersection.iter().map(|i| (indexing.find(*i).unwrap() + 1) as u64).sum::<u64>()
+            intersection
+                .iter()
+                .map(|i| (indexing.find(*i).unwrap() + 1) as u64)
+                .sum::<u64>()
         })
         .sum()
 }

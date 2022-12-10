@@ -6,13 +6,16 @@ fn part_1() -> u64 {
     let mut max = 0;
 
     for e in vals {
-        let this = e.split("\n").map(|x| {
-            if x.is_empty() {
-                0u64
-            } else {
-                x.parse::<u64>().unwrap()
-            }
-        }).sum();
+        let this = e
+            .split('\n')
+            .map(|x| {
+                if x.is_empty() {
+                    0u64
+                } else {
+                    x.parse::<u64>().unwrap()
+                }
+            })
+            .sum();
         if this > max {
             max = this;
         }
@@ -26,13 +29,16 @@ fn part_2() -> u64 {
     let mut sums = vec![];
 
     for e in vals {
-        let this: u64 = e.split("\n").map(|x| {
-            if x.is_empty() {
-                0u64
-            } else {
-                x.parse::<u64>().unwrap()
-            }
-        }).sum();
+        let this: u64 = e
+            .split('\n')
+            .map(|x| {
+                if x.is_empty() {
+                    0u64
+                } else {
+                    x.parse::<u64>().unwrap()
+                }
+            })
+            .sum();
         sums.push(this);
     }
 

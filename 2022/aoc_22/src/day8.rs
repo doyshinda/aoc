@@ -3,9 +3,15 @@ use griddy::Grid;
 
 fn part_1() -> u64 {
     let data = util::read_input("8.input");
-    let grid = Grid::from_2d_unchecked(data.lines()
-        .map(|line| line.chars().map(|c| unum!(c.to_string())).collect::<Vec<u64>>())
-        .collect::<Vec<Vec<u64>>>());
+    let grid = Grid::from_2d_unchecked(
+        data.lines()
+            .map(|line| {
+                line.chars()
+                    .map(|c| unum!(c.to_string()))
+                    .collect::<Vec<u64>>()
+            })
+            .collect::<Vec<Vec<u64>>>(),
+    );
 
     let mut visible = 0;
 
@@ -21,16 +27,21 @@ fn part_1() -> u64 {
                 continue;
             }
         }
-
     }
     visible as u64
 }
 
 fn part_2() -> u64 {
     let data = util::read_input("8.input");
-    let grid = Grid::from_2d_unchecked(data.lines()
-        .map(|line| line.chars().map(|c| unum!(c.to_string())).collect::<Vec<u64>>())
-        .collect::<Vec<Vec<u64>>>());
+    let grid = Grid::from_2d_unchecked(
+        data.lines()
+            .map(|line| {
+                line.chars()
+                    .map(|c| unum!(c.to_string()))
+                    .collect::<Vec<u64>>()
+            })
+            .collect::<Vec<Vec<u64>>>(),
+    );
 
     let mut score = 0;
     for row_idx in 0..grid.rows_len() {
@@ -126,7 +137,7 @@ fn am_visible_col(grid: &Grid<u64>, col_idx: usize, row_idx: usize) -> bool {
         }
     }
 
-    return am_visible;
+    am_visible
 }
 
 fn am_visible_row(grid: &Grid<u64>, row_idx: usize, col_idx: usize) -> bool {
@@ -153,7 +164,7 @@ fn am_visible_row(grid: &Grid<u64>, row_idx: usize, col_idx: usize) -> bool {
         }
     }
 
-    return am_visible;
+    am_visible
 }
 
 #[cfg(test)]

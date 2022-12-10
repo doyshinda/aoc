@@ -30,17 +30,17 @@ fn part_1() -> u64 {
 
         if o == m {
             total += 3;
-            continue
+            continue;
         }
 
         if o == 'A' && m == 'B' {
             total += 6;
-            continue
+            continue;
         }
 
         if o == 'B' && m == 'C' {
             total += 6;
-            continue
+            continue;
         }
 
         if o == 'C' && m == 'A' {
