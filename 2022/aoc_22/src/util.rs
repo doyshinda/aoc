@@ -88,6 +88,10 @@ macro_rules! inum {
     ($arg:tt) => {
         $arg.parse::<i64>().unwrap()
     };
+
+    ($arg:expr) => {
+        $arg.parse::<i64>().unwrap()
+    };
 }
 
 macro_rules! hs {
