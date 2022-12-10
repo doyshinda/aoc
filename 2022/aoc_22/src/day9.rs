@@ -2,15 +2,15 @@ use crate::util;
 
 fn part_1() -> u64 {
     let data = util::read_input("9.input");
-    let moves: Vec<(char, i64)> = data.lines().map(|line| {
-        let (direction, count) = line.split_once(" ").unwrap();
-        (direction.chars().next().unwrap(), inum!(count))
-    }).collect();
+    let moves: Vec<(char, i64)> = data
+        .lines()
+        .map(|line| {
+            let (direction, count) = line.split_once(' ').unwrap();
+            (direction.chars().next().unwrap(), inum!(count))
+        })
+        .collect();
     hs!(seen, (i64, i64));
-    let mut knots = vec![
-        (0, 0),
-        (0, 0),
-    ];
+    let mut knots = vec![(0, 0), (0, 0)];
 
     for m in &moves {
         let op = match m.0 {
@@ -18,7 +18,7 @@ fn part_1() -> u64 {
             'R' => inc_y,
             'U' => sub_x,
             'D' => inc_x,
-            _ => unreachable!()
+            _ => unreachable!(),
         };
         for _ in 0..(m.1 as usize) {
             op(&mut knots[0]);
@@ -26,34 +26,37 @@ fn part_1() -> u64 {
                 knots[t] = update_knot(&knots[t - 1], &knots[t]);
             }
             seen.insert(knots[1]);
-        } 
+        }
     }
 
     seen.len() as u64
 }
 
 fn sub_x(val: &mut (i64, i64)) {
-    (val.0 -= 1, val.1);
+    val.0 -= 1;
 }
 
 fn inc_x(val: &mut (i64, i64)) {
-    (val.0 += 1, val.1);
+    val.0 += 1;
 }
 
 fn sub_y(val: &mut (i64, i64)) {
-    (val.0, val.1 -= 1);
+    val.1 -= 1;
 }
 
 fn inc_y(val: &mut (i64, i64)) {
-    (val.0, val.1 += 1);
+    val.1 += 1;
 }
 
 fn part_2() -> u64 {
     let data = util::read_input("9.input");
-    let moves: Vec<(char, i64)> = data.lines().map(|line| {
-        let (direction, count) = line.split_once(" ").unwrap();
-        (direction.chars().next().unwrap(), inum!(count))
-    }).collect();
+    let moves: Vec<(char, i64)> = data
+        .lines()
+        .map(|line| {
+            let (direction, count) = line.split_once(' ').unwrap();
+            (direction.chars().next().unwrap(), inum!(count))
+        })
+        .collect();
     hs!(seen, (i64, i64));
     let mut knots = vec![
         (0, 0),
@@ -74,7 +77,7 @@ fn part_2() -> u64 {
             'R' => inc_y,
             'U' => sub_x,
             'D' => inc_x,
-            _ => unreachable!()
+            _ => unreachable!(),
         };
         for _ in 0..(m.1 as usize) {
             op(&mut knots[0]);
@@ -82,7 +85,7 @@ fn part_2() -> u64 {
                 knots[t] = update_knot(&knots[t - 1], &knots[t]);
             }
             seen.insert(knots[9]);
-        } 
+        }
     }
 
     seen.len() as u64
@@ -122,5 +125,5 @@ fn update_knot(head: &(i64, i64), tail: &(i64, i64)) -> (i64, i64) {
         resp.1 += y_delta;
     }
 
-    return resp;
+    resp
 }
