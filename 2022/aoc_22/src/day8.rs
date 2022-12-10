@@ -3,7 +3,7 @@ use griddy::Grid;
 
 fn part_1() -> u64 {
     let data = util::read_input("8.input");
-    let grid = Grid::from_2d(data.lines()
+    let grid = Grid::from_2d_unchecked(data.lines()
         .map(|line| line.chars().map(|c| unum!(c.to_string())).collect::<Vec<u64>>())
         .collect::<Vec<Vec<u64>>>());
 
@@ -28,7 +28,7 @@ fn part_1() -> u64 {
 
 fn part_2() -> u64 {
     let data = util::read_input("8.input");
-    let grid = Grid::from_2d(data.lines()
+    let grid = Grid::from_2d_unchecked(data.lines()
         .map(|line| line.chars().map(|c| unum!(c.to_string())).collect::<Vec<u64>>())
         .collect::<Vec<Vec<u64>>>());
 
@@ -161,7 +161,7 @@ mod tests {
     use super::*;
     #[test]
     fn test_am_visible_col() {
-        let grid = Grid::from_2d(vec![
+        let grid = Grid::from_2d_unchecked(vec![
             vec![3, 0, 3, 7, 3],
             vec![2, 5, 5, 1, 2],
             vec![6, 5, 3, 3, 2],
@@ -179,7 +179,7 @@ mod tests {
 
     #[test]
     fn test_am_visible_row() {
-        let grid = Grid::from_2d(vec![
+        let grid = Grid::from_2d_unchecked(vec![
             vec![3, 0, 3, 7, 3],
             vec![2, 5, 5, 1, 2],
             vec![6, 5, 3, 3, 2],
@@ -195,7 +195,7 @@ mod tests {
 
     #[test]
     fn test_score() {
-        let grid = Grid::from_2d(vec![
+        let grid = Grid::from_2d_unchecked(vec![
             vec![3, 0, 3, 7, 3],
             vec![2, 5, 5, 1, 2],
             vec![6, 5, 3, 3, 2],
