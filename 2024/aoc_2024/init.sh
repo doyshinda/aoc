@@ -18,7 +18,6 @@ use crate::util;
 fn part_1() -> u64 {
     let data = util::read_input("${day}_test.input");
     let mut ans = 0;
-    
 
     ans
 }
@@ -26,7 +25,6 @@ fn part_1() -> u64 {
 fn part_2() -> u64 {
     let data = util::read_input("${day}_test.input");
     let mut ans = 0;
-    
 
     ans
 }
@@ -76,3 +74,4 @@ subl $test_path
 subl $path
 
 DEBUG=1 cargo run
+google-chrome "https://adventofcode.com/2024/day/${day}"
