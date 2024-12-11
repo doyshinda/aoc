@@ -1,6 +1,12 @@
 #![macro_use]
 #![allow(unused_macros)]
+use std::collections::{HashMap, VecDeque};
+use griddy::Grid;
+use once_cell::sync::Lazy;
 use std::fs;
+use regex::Regex;
+
+pub static RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"-?\d+").unwrap());
 
 const INPUT_DIR: &str = "/home/abe/projects/aoc/2024/aoc_2024/input/";
 // const INPUT_DIR: &str = "/tmp/";
@@ -44,19 +50,21 @@ macro_rules! run {
         pub fn run() {
             let start = std::time::Instant::now();
             let answer = part_1();
+            let elapsed = start.elapsed();
             print!(
                 "====================\npart 1 [{:?}]\n====================\n",
-                start.elapsed(),
+                elapsed,
             );
             println!("{:?}\n\n", answer);
 
             let start = std::time::Instant::now();
             let answer = part_2();
+            let elapsed2 = start.elapsed();
             print!(
                 "====================\npart 2 [{:?}]\n====================\n",
-                start.elapsed(),
+                elapsed2,
             );
-            println!("{:?}\n\n", answer);
+            println!("{:?}\n\n[{:?}]", answer, elapsed + elapsed2);
         }
     };
 }
@@ -93,6 +101,107 @@ pub fn lcm_vals(vals: &Vec<u64>) -> u64 {
     }
 
     calc_lcm
+}
+
+pub fn dijkstra(grid: &Grid<u64>, x: usize, y: usize) -> u64 {
+    let mut dist = HashMap::new();
+    let mut queue: Vec<(usize, usize)> = Vec::new();
+    let source = (x, y);
+    for y in 0..grid.rows_len() {
+        for x in 0..grid.cols_len() {
+            let v = (y, x);
+            dist.insert(v, 1000000u64);
+            queue.push(v);
+        }
+    }
+
+    dist.insert(source, 0);
+    while queue.len() > 0 {
+        let c = find_min(&mut queue, &dist);
+        let (y, x) = c;
+
+        for n in grid.row_neighbors(y, x).into_iter().chain(grid.col_neighbors(y, x)) {
+            if !queue.contains(&n) {
+                continue;
+            }
+
+            let dist_u = dist.get(&c).unwrap();
+            let dist_v = dist.get(&n).unwrap();
+            let alt = dist_u + grid[n.0][n.1];
+
+            if alt < *dist_v {
+                dist.insert(n, alt);
+            }
+        }
+    }
+
+    *dist.get(&(grid.rows_len() - 1, grid.cols_len() - 1)).unwrap()
+}
+
+fn find_min(q: &mut Vec<(usize, usize)>, d: &HashMap<(usize, usize), u64>) -> (usize, usize) {
+    let mut min_val = u64::MAX;
+    let mut min_idx = 0;
+    for (idx, c) in q.iter().enumerate() {
+        let val = d.get(c).unwrap();
+        if *val < min_val {
+            min_val = *val;
+            min_idx = idx;
+        }
+    }
+
+    q.swap_remove(min_idx)
+}
+
+pub fn print(grid: &Grid<char>) {
+    println!("{}", "====================================");
+    for r in grid.rows() {
+        println!("{:?}", r.iter().collect::<String>());
+    }
+}
+
+#[derive(Debug)]
+pub struct Node {
+    pub x: usize,
+    pub y: usize,
+    pub cnt: u64,
+    pub path: Vec<(usize, usize)>,
+}
+
+pub fn dfs<F, T>(grid: &Grid<T>, x_start: usize, start: usize, mut f: F)
+where
+    F: FnMut(&Node, &Node) -> bool
+{
+    let n = Node{
+        x: x_start,
+        y: start,
+        cnt: 0,
+        path: vec![(x_start, start)],
+    };
+
+    let mut next = VecDeque::new();
+    next.push_back(n);
+
+    while next.len() > 0 {
+        let n = next.pop_back().unwrap();
+
+        for v in grid.immediate_neighbors(n.x, n.y) {
+            if n.path.contains(&v) {
+                continue;
+            }
+
+            let mut candidate = Node{
+                x: v.0,
+                y: v.1,
+                cnt: n.cnt + 1,
+                path: n.path.clone(),
+            };
+
+            if f(&n, &candidate) {
+                candidate.path.push(v);
+                next.push_back(candidate);
+            }
+        }
+    }
 }
 
 macro_rules! log {
@@ -171,5 +280,38 @@ macro_rules! hm_inc {
             .entry($key)
             .and_modify(|c| *c += $value)
             .or_insert($value);
+    };
+}
+
+macro_rules! auto_split {
+    ($line:tt, $t:ty) => {
+        {
+            let split = $line.chars().filter(|x| !x.is_ascii_digit()).next().unwrap();
+            match split {
+                ' ' => $line.split_ascii_whitespace().map(|x| x.parse::<$t>().unwrap()).collect::<Vec<$t>>(),
+                _ => $line.split(split).map(|x| x.parse::<$t>().unwrap()).collect::<Vec<$t>>(),
+            }
+        }
+    };
+    ($line:tt) => {
+        auto_split!($line, u64)
+    };
+}
+
+macro_rules! uints {
+    ($line:tt) => {
+        crate::util::RE.find_iter($line).map(|x| x.as_str().parse::<u64>().unwrap()).collect::<Vec<u64>>()
+    };
+}
+
+macro_rules! usplit_once {
+    ($arg:expr, $s:tt) => {
+        $arg.split_once($s).and_then(|(a, b)| Some((unum!(a), unum!(b)))).expect("invalid split")
+    }
+}
+
+macro_rules! convert {
+    ($arg:expr) => {
+        $arg.try_into().unwrap()
     };
 }
